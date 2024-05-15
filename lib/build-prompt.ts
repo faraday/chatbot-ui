@@ -235,22 +235,27 @@ export async function buildGoogleGeminiFinalMessages(
 
   let GOOGLE_FORMATTED_MESSAGES = []
 
-  if (chatSettings.model === "gemini-pro") {
+  if (
+    (chatSettings.model === "gemini-pro")
+    ||
+    (chatSettings.model === "gemini-1.5-flash-latest")
+  ) {
     GOOGLE_FORMATTED_MESSAGES = [
       {
         role: "user",
-        parts: finalMessages[0].content
+        parts: [{"text": finalMessages[0].content}]
       },
       {
         role: "model",
-        parts: "I will follow your instructions."
+        parts: [{"text": "I will follow your instructions."}]
       }
     ]
 
     for (let i = 1; i < finalMessages.length; i++) {
+      const text = finalMessages[i].content as string
       GOOGLE_FORMATTED_MESSAGES.push({
         role: finalMessages[i].role === "user" ? "user" : "model",
-        parts: finalMessages[i].content as string
+        parts: [{"text": text}]
       })
     }
 
